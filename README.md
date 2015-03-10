@@ -1,63 +1,20 @@
 # GPUImage for Android
-[![Build Status](https://api.travis-ci.org/CyberAgent/android-gpuimage.png?branch=master,develop)](https://travis-ci.org/CyberAgent/android-gpuimage)
-
-Idea from: [iOS GPUImage framework](https://github.com/BradLarson/GPUImage)
-
-Goal is to have something as similar to GPUImage as possible. Vertex and fragment shaders are exactly the same. That way it makes it easier to port filters from GPUImage iOS to Android.
-
+基于项目___修改的，因为原项目中的GPUImageGroup的处理不太好，这里打算进行重写。
+原项目中GpuImageGroup的问题在于：处理过程中，Group内所有的滤镜全都拉到第一层进行处理，导致
+    GpuImageGroup重写的onDraw方法不能被调用，但是如果不拉到第一层处理，结果会出问题。分析
+    后发现是原项目中的frameBuffer部分管理的不好，这里打算重写GpuImageGroup，重新管理FrameBuffer
+    的处理，使GpuImageGroup使用的更方便。
+### TODO
+    后期处理，想提出一个自己的GpuImageView，不采用glSurface，因为glSurfaceView不支持动画，
+    不能加些特效处理。GpuImageView就是将bitmap丢给GpuImage进行处理，将返回的bitmap更新到
+    imageView中去，性能上肯定会比glSurfaceView低。
 ## Requirements
 * Android 2.2 or higher (OpenGL ES 2.0)
 
 ## Usage
 
 ### Gradle dependency
-
-```groovy
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.2.3'
-}
-```
-
-### Sample Code
-With preview:
-
-```java
-@Override
-public void onCreate(final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity);
-
-    Uri imageUri = ...;
-    mGPUImage = new GPUImage(this);
-    mGPUImage.setGLSurfaceView((GLSurfaceView) findViewById(R.id.surfaceView));
-    mGPUImage.setImage(imageUri); // this loads image on the current thread, should be run in a thread
-    mGPUImage.setFilter(new GPUImageSepiaFilter());
-
-    // Later when image should be saved saved:
-    mGPUImage.saveToPictures("GPUImage", "ImageWithFilter.jpg", null);
-}
-```
-
-Without preview:
-
-```java
-Uri imageUri = ...;
-mGPUImage = new GPUImage(context);
-mGPUImage.setFilter(new GPUImageSobelEdgeDetection());
-mGPUImage.setImage(imageUri);
-mGPUImage.saveToPictures("GPUImage", "ImageWithFilter.jpg", null);
-```
-
-### Gradle
-Make sure that you run the clean target when using maven.
-
-```groovy
-gradle clean assemble
-```
+    去掉了maven的依赖
 
 ## License
     Copyright 2012 CyberAgent, Inc.
