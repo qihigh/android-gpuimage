@@ -16,7 +16,7 @@
 
 package jp.co.cyberagent.android.gpuimage.util;
 
-import jp.co.cyberagent.android.gpuimage.Rotation;
+import jp.co.cyberagent.android.gpuimage.core.Rotation;
 
 public class TextureRotationUtil {
 
